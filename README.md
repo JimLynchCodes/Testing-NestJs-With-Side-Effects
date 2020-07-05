@@ -11,9 +11,11 @@ He said, _"Don't test what you don't own".
 
 What he meant was that a developer should not create mocks for third-party code, only for the functions and classes written by members if his or her own team. 
 
-Why?
+#### _Why?_
 
 The main reason here is that library change and evolve over time, but your mocks will not change with it. The true interface of the thing will become different over time and so your code which interacts with it will need to change. However, your unit tests, still calling the mock for the only interface, will still pass... they will pass while a bug now exists- a false positive!
+
+So, the idea is that mocking things you don't own will cause lots of headaches around updating and reworking tests, and therefore _not_ mocking things you don't own should lead to a nicer, easier-to-maintain codebase and test suite.
 
 This repo keeps this philosophy in mind and tests the side-effect code without mocking or directly spying on the specific api. 
 
@@ -38,6 +40,15 @@ This endpoint sleeps and then returns the string "Awake!".
 
 GET - `localhost:3000/sleep` - sleeps for five seconds and returns "Awake!".
 
+#### How We Can Test Without Mocking It
+
+The goal here is to have our tests run quickly and not wait the full 5 seconds but fake that it happened still assert that the timeout has been set.
+
+Instead of spying on the "setTimeout" method directly, we can use Jest's "useFakeTimers" to replace the timeouts with mock functions.
+
+With this approach, even if the nodejs syntax for whatever reason changed to "setTimeOut", our code would still work fine (assuming Jest's useFakeTimers was kept up-to-date with the new timer syntax)
+
+<br/>
 
 ### 2. HTTP Request
 
@@ -45,6 +56,7 @@ Calls a third-party endpoint, either returns that endpoint's response or an erro
 
 GET - `localhost:3000/joke` - gets a random joke from (jokes endpoint)
 
+<br/>
 
 ### 3. MongoDb Interactions
 
@@ -62,7 +74,7 @@ PUT - `localhost:3000/users/:id` - updates a user
 
 DELETE - `localhost:3000/users/:id` - deletes a user 
 
-
+<br/>
 
 # Scaffloded With Nest-CLI
 
